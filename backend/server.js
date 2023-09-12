@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -11,12 +13,12 @@ let ADMINS = []; // ADMIN ARRAY;
 let COURSES = []; // COURSE ARRAY;
 let USERS = []; // USER ARRAY;
 
-const secretKey = "tOpS3Cr3t"; //SECRET KEY FOR JWT
-
 //FUNCTION TO GENERATE A TOKEN PROVIDED THE USERS USERNAME
 const generateJWT = (user) => {
   const payload = { username: user.username };
-  return jwt.sign(payload, secretKey, { expiresIn: "1h" });
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1h",
+  });
 };
 
 const authenticateJWT = (req, res, next) => {
@@ -25,7 +27,7 @@ const authenticateJWT = (req, res, next) => {
   if (authHeader) {
     const token = authHeader.split(" ")[1]; //SPLIT THE AUTHHEADER BY THE SPACE AND TAKE THE 1 INDEXED STRING i.e THE TOKEN
 
-    jwt.verify(token, secretKey, (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(403);
       req.user = user;
       next();
