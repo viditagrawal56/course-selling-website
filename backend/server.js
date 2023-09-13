@@ -1,9 +1,19 @@
-require("dotenv").config();
+//importing libraries
+import dotenv from "dotenv";
+import express from "express";
+import jwt from "jsonwebtoken";
+import cors from "cors";
+import { PORT, mongoDB_URL } from "./config.js";
+import mongoose from "mongoose";
 
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const cors = require("cors");
+//importing models
+import { Admin } from "./models/adminModel.js";
+import { User } from "./models/userModel.js";
+import { Course } from "./models/courseModel.js";
 
+dotenv.config();
+
+//initiating express
 const app = express();
 
 app.use(express.json());
@@ -167,6 +177,14 @@ app.get("/users/purchasedCourses", authenticateJWT, (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
-});
+mongoose
+  .connect(mongoDB_URL)
+  .then(() => {
+    console.log("App connected to Database");
+    app.listen(PORT, () => {
+      console.log(`Server is listening on port: ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
