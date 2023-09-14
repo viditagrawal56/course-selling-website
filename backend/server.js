@@ -49,59 +49,76 @@ const authenticateJWT = (req, res, next) => {
 
 //*ADMIN ROUTES
 //ADMIN SIGNUP ROUTE
-app.post("/admin/signup", (req, res) => {
-  const alreadyExists = ADMINS.find((a) => a.username == req.body.username);
+app.post("/admin/signup", async (req, res) => {
+  const { username, password } = req.body;
+  const alreadyExists = await Admin.findOne({ username });
   if (alreadyExists) {
     res.status(403).json({ message: "ADMIN ALREADY EXISTS PLEASE LOGIN!" });
   } else {
-    const admin = req.body;
-    ADMINS.push(admin);
-    res.status(200).json({ message: "ADMIN CREATED SUCCESSFULLY" });
+    const newAdmin = new Admin({ username, password });
+    try {
+      await newAdmin.save();
+      res.status(200).json({ message: "ADMIN CREATED SUCCESSFULLY" });
+    } catch (err) {
+      res.status(500).json({ message: "FAILED TO CREATE ADMIN", error: err });
+    }
   }
 });
 
 //ADMIN LOGIN ROUTE
-app.post("/admin/login", (req, res) => {
+app.post("/admin/login", async (req, res) => {
   const admin = {
     username: req.headers.username,
     password: req.headers.password,
   };
-  const adminExists = ADMINS.find(
-    (a) => a.username === admin.username && a.password === admin.password
-  );
+  const adminExists = await Admin.findOne({
+    username: admin.username,
+    password: admin.password,
+  });
+
   if (adminExists) {
     const token = generateJWT(admin);
     res.status(200).json({ message: "LOGGED IN SUCCESSFULLY", token });
   } else {
-    res.status(401).json({ message: "ADMIN AUTHENTICATION FAILED" });
+    res.status(403).json({ message: "Invalid Username or Password" });
   }
 });
 
 //ADMIN CREATE COURSE ROUTE
-app.post("/admin/courses", authenticateJWT, (req, res) => {
-  const newCourse = req.body;
-  newCourse.id = COURSES.length + 1;
-  COURSES.push(newCourse);
-  res.status(200).json({ message: "COURSE CREATED SUCCESSFULLY" });
-});
-
-//ADMIN UPDATE COURSE ROUTE
-app.put("/admin/courses/:courseId", authenticateJWT, (req, res) => {
-  const id = parseInt(req.params.courseId);
-  const index = COURSES.findIndex((c) => c.id === id);
-
-  if (index > -1) {
-    const updatedCourse = { ...COURSES[index], ...req.body };
-    COURSES[index] = updatedCourse;
-    res.status(200).json({ message: "COURSE UPDATED SUCCESSFULLY" });
-  } else {
-    res.status(404).json({ message: "COURSE NOT FOUND" });
+app.post("/admin/courses", authenticateJWT, async (req, res) => {
+  const newCourse = new Course(req.body);
+  try {
+    await newCourse.save();
+    res
+      .status(200)
+      .json({ message: "COURSE CREATED SUCCESSFULLY", courseId: newCourse.id });
+  } catch (err) {
+    res.status(500).json({ message: "FAILED TO CREATE COURSE", error: err });
   }
 });
 
-//USER GET COURSES ROUTE
-app.get("/admin/courses", authenticateJWT, (req, res) => {
-  res.status(200).json({ courses: COURSES });
+//ADMIN UPDATE COURSE ROUTE
+app.put("/admin/courses/:courseId", authenticateJWT, async (req, res) => {
+  try {
+    const course = await Course.findByIdAndUpdate(
+      req.params.courseId,
+      req.body,
+      { new: true }
+    );
+    if (course) {
+      res.status(200).json({ message: "COURSE UPDATED SUCCESSFULLY" });
+    } else {
+      res.status(404).json({ message: "COURSE NOT FOUND" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "FAILED TO UPDATE COURSE", error: err });
+  }
+});
+
+//ADMIN GET COURSES ROUTE
+app.get("/admin/courses", authenticateJWT, async (req, res) => {
+  const courses = await Course.find({});
+  res.status(200).json({ courses });
 });
 
 //*USER ROUTES
@@ -178,7 +195,7 @@ app.get("/users/purchasedCourses", authenticateJWT, (req, res) => {
 });
 
 mongoose
-  .connect(mongoDB_URL)
+  .connect(mongoDB_URL, { dbName: "course_website_data" })
   .then(() => {
     console.log("App connected to Database");
     app.listen(PORT, () => {
