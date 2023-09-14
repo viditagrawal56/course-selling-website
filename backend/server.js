@@ -124,58 +124,68 @@ app.get("/admin/courses", authenticateJWT, async (req, res) => {
 //*USER ROUTES
 
 //USER SIGNUP ROUTE
-app.post("/users/signup", (req, res) => {
-  const alreadyExists = USERS.find(
-    (u) => u.username === req.body.username && u.password === req.body.password
-  );
+app.post("/users/signup", async (req, res) => {
+  const { username, password } = req.body;
+  const alreadyExists = await User.findOne({ username });
   if (alreadyExists) {
-    res.status(403).json({ message: "USER ALREADY EXISTS" });
+    res.status(403).json({ message: "USER ALREADY EXISTS PLEASE LOGIN!" });
   } else {
-    const newUser = req.body;
-    USERS.push(newUser);
-    res
-      .status(200)
-      .json({ users: USERS, message: "USER CREATED SUCCESSFULLY" });
+    const newUser = new User({ username, password });
+    try {
+      await newUser.save();
+      res.status(200).json({ message: "USER CREATED SUCCESSFULLY" });
+    } catch (err) {
+      res.status(500).json({ message: "FAILED TO CREATE USER", error: err });
+    }
   }
 });
 
 //USER LOGIN ROUTE
-app.post("/users/login", (req, res) => {
+app.post("/users/login", async (req, res) => {
   const user = {
     username: req.headers.username,
     password: req.headers.password,
   };
 
-  const userExists = USERS.find(
-    (u) => u.username === user.username && u.password === user.password
-  );
+  const userExists = await User.findOne({
+    username: user.username,
+    password: user.password,
+  });
+
   if (userExists) {
     const token = generateJWT(user);
     res.status(200).json({ message: "USER LOGGED IN SUCCESSFULLY", token });
   } else {
-    res.status(401).json({ message: "USER AUTHENTICATION FAILED" });
+    res.status(403).json({ message: "Invalid Username or Password" });
   }
 });
 
 //USER GET COURSES ROUTE
-app.get("/users/courses", authenticateJWT, (req, res) => {
-  let filteredCourses = COURSES.filter((c) => c.published);
-  res.status(200).json({ courses: filteredCourses });
+app.get("/users/courses", authenticateJWT, async (req, res) => {
+  try {
+    const filteredCourses = await Course.find({ published: true });
+    res.status(200).json({ courses: filteredCourses });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
 //USER PURCHASE COURSES ROUTE
-app.post("/users/courses/:courseId", authenticateJWT, (req, res) => {
-  const id = parseInt(req.params.courseId);
-  const course = COURSES.find((c) => c.id === id);
-
+app.post("/users/courses/:courseId", authenticateJWT, async (req, res) => {
+  const course = await Course.findOne({
+    _id: req.params.courseId,
+    published: true,
+  });
   if (course) {
-    const user = USERS.find((u) => u.username === req.user.username);
+    const user = await User.findOne({ username: req.user.username });
     if (user) {
-      user.purchasedCourses = user.purchasedCourses
-        ? user.purchasedCourses
-        : [];
       user.purchasedCourses.push(course);
-      res.status(200).json({ message: "COURSE PURCHASED SUCCESSFULLY" });
+      try {
+        await user.save();
+        res.status(200).json({ message: "COURSE PURCHASED SUCCESSFULLY" });
+      } catch (error) {
+        res.status(500).json({ error });
+      }
     } else {
       res.status(403).json({ message: "USER NOT FOUND" });
     }
@@ -185,8 +195,11 @@ app.post("/users/courses/:courseId", authenticateJWT, (req, res) => {
 });
 
 //USER GET PURCHASED COURSES ROUTE
-app.get("/users/purchasedCourses", authenticateJWT, (req, res) => {
-  const user = USERS.find((u) => (u.username = req.user.username));
+app.get("/users/purchasedCourses", authenticateJWT, async (req, res) => {
+  const user = await User.findOne({ username: req.user.username }).populate(
+    "purchasedCourses"
+  );
+
   if (user && user.purchasedCourses) {
     res.status(200).json({ purchasedCourses: user.purchasedCourses });
   } else {
