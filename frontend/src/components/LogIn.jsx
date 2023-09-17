@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Card } from "@mui/material";
 
 const LogIn = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <>
       <Box
@@ -30,18 +32,44 @@ const LogIn = () => {
           }}
         >
           <TextField
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
             fullWidth
             id="outlined-basic"
             label="Username"
             variant="outlined"
           />
           <TextField
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             fullWidth
             id="outlined-basic"
             label="Password"
             variant="outlined"
           />
-          <Button variant="contained">Log In</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              fetch("http://localhost:3000/admin/login", {
+                method: "POST",
+                body: JSON.stringify({
+                  username: username,
+                  password: password,
+                }),
+                headers: { "Content-type": "application/json" },
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log(data);
+                });
+            }}
+          >
+            Log In
+          </Button>
+          {username}
+          {password}
         </Card>
       </Box>
     </>
