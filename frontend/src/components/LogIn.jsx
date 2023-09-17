@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Card } from "@mui/material";
-
 const LogIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -58,7 +57,11 @@ const LogIn = () => {
                   username: username,
                   password: password,
                 }),
-                headers: { "Content-type": "application/json" },
+                headers: {
+                  "Content-type": "application/json",
+                  username: username,
+                  password: password,
+                },
               })
                 .then((res) => res.json())
                 .then((data) => {
@@ -68,8 +71,6 @@ const LogIn = () => {
           >
             Log In
           </Button>
-          {username}
-          {password}
         </Card>
       </Box>
     </>

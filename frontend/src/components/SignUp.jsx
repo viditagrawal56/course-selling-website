@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Box, Typography, TextField, Button, Card } from "@mui/material";
 
 const SignUp = () => {
@@ -73,8 +72,6 @@ const SignUp = () => {
           >
             Sign Up
           </Button>
-          {username}
-          {password}
         </Card>
       </Box>
     </>
