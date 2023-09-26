@@ -40,6 +40,10 @@ const SignUp = () => {
           <button
             type="button"
             onClick={async () => {
+              if (!username.trim() || !password.trim()) {
+                console.error("Please enter username and password");
+                return;
+              }
               try {
                 const res = await axios.post(
                   "http://localhost:3000/admin/signup",
@@ -60,7 +64,10 @@ const SignUp = () => {
           </button>
         </form>
         <Link className="w-full" to="/LogIn">
-          <button className="my-4 w-full text-amber-300 ring-2 focus:outline-none ring-amber-300 font-medium rounded-lg text-sm sm:w-auto py-2.5 text-center">
+          <button
+            onClick={handleSwitch}
+            className="my-4 w-full text-amber-300 ring-2 focus:outline-none ring-amber-300 font-medium rounded-lg text-sm sm:w-auto py-2.5 text-center"
+          >
             Sign In
           </button>
         </Link>
