@@ -76,6 +76,13 @@ router.put("/courses/:courseId", authenticateJWT, async (req, res) => {
   }
 });
 
+//GET SPECIFIC ADMIN
+router.get("/me", authenticateJWT, (req, res) => {
+  res.json({
+    username: req.user.username,
+  });
+});
+
 //ADMIN GET COURSES ROUTE
 router.get("/courses", authenticateJWT, async (req, res) => {
   const courses = await Course.find({});

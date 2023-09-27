@@ -44,11 +44,23 @@ export const logIn = async (email, password, activeButton) => {
 
     if (res.status >= 200 && res.status < 300) {
       console.log("Logged In SuccesFully");
-      window.location.href = "/addCourse";
+      window.location.href = "/Courses";
     } else {
       console.error("Request was not successful. Status code:", res.status);
     }
   }
   localStorage.setItem("token", res.data.token);
-  console.log(res);
+  console.log(res.data);
+};
+
+export const getUser = async () => {
+  const res = await API.get(
+    "/admin/me",
+    {},
+    {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    }
+  );
+
+  return res.data;
 };

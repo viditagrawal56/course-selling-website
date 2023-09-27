@@ -4,6 +4,7 @@ import TopBar from "./components/TopBar";
 import HomePage from "./pages/HomePage";
 import Auth from "./pages/Auth";
 import { AddCourse } from "./pages/AddCourse";
+import Courses from "./pages/Courses";
 function App() {
   return (
     <>
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/Auth" element={<Auth />}></Route>
         <Route path="/AddCourse" element={<AddCourse />}></Route>
+        <Route path="/Courses" element={<Courses />}></Route>
       </Routes>
     </>
   );
