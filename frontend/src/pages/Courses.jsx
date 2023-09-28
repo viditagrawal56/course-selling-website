@@ -8,7 +8,6 @@ const Courses = () => {
     const getCourses = async () => {
       try {
         const res = await getAllCourses();
-        console.log(res.courses);
         setCourses(res.courses);
       } catch (error) {
         console.error(error);
@@ -17,9 +16,7 @@ const Courses = () => {
 
     getCourses();
   }, []);
-  //   useEffect(() => {
-  //     getAllCourses();
-  //   }, []);
+
   return (
     <>
       <Link
@@ -30,11 +27,11 @@ const Courses = () => {
         }}
         to="/AddCourse"
       >
-        <button className="text-slate-800 bg-amber-300 hover:bg-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center">
+        <button className="text-slate-800 bg-amber-300 hover:bg-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center ">
           Create A Course
         </button>
       </Link>
-      <div className="text-slate-50">Courses</div>
+      <div className="text-slate-50 my-6">Courses</div>
       {courses.map((course) => (
         <Course course={course} />
       ))}

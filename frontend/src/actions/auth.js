@@ -54,13 +54,9 @@ export const logIn = async (email, password, activeButton) => {
 };
 
 export const getUser = async () => {
-  const res = await API.get(
-    "/admin/me",
-    {},
-    {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    }
-  );
+  const res = await API.get("/admin/me", {
+    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+  });
 
   return res.data;
 };
