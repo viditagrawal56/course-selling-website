@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { createCourse } from "../actions/course.js";
 export const AddCourse = () => {
@@ -107,6 +108,14 @@ export const AddCourse = () => {
           >
             Create Course
           </button>
+          <Link to={"/Courses"}>
+            <button
+              className="text-slate-800 bg-amber-300 hover:bg-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center my-3"
+              type="submit"
+            >
+              Back
+            </button>
+          </Link>
         </form>
       </div>
     </>

@@ -26,7 +26,12 @@ const Auth = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center text-white mt-32 items-center w-full px-10">
+      <div className="flex flex-col justify-center text-white mt-24 items-center w-full px-10">
+        <div className="mb-9">
+          <h1 className="text-3xl font-bold ">
+            Course<span className="text-amber-300">Zap</span>
+          </h1>
+        </div>
         <div className="flex w-full ">
           <button
             className={`${

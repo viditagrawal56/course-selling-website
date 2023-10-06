@@ -21,7 +21,7 @@ const HomePage = () => {
           to="/Auth"
         >
           <button className="bg-amber-300 text-slate-800 rounded-md p-2 text-sm font-medium hover:bg-yellow-300 transition-all ease-in delay-70 hover:-translate-y-1">
-            Get started
+            Start Learning
           </button>
         </Link>
       </div>
