@@ -101,7 +101,7 @@ const UpdateForm = () => {
           className="text-slate-800 bg-amber-300 hover:bg-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center"
           type="submit"
         >
-          Create Course
+          Update Course
         </button>
         <Link to={"/Courses"}>
           <button
