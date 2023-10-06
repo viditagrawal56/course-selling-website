@@ -32,7 +32,7 @@ const TopBar = () => {
           }}
           to="/"
         >
-          <div className="text-slate-50 text-2xl">⚡</div>
+          <div className="text-slate-50 text-3xl">⚡</div>
         </Link>
         <div className="text-slate-50 text-xs">{username}</div>
         <Link
@@ -43,12 +43,14 @@ const TopBar = () => {
           }}
           to="/"
         >
-          <button
-            onClick={handleLogOut}
-            className="bg-amber-300 text-slate-800 rounded-md p-2 text-sm font-medium hover:bg-yellow-300 transition-all ease-in delay-70"
-          >
-            Log Out
-          </button>
+          {username && (
+            <button
+              onClick={handleLogOut}
+              className="bg-amber-300 text-slate-800 rounded-md p-2 text-sm font-medium hover:bg-yellow-300 transition-all ease-in delay-70"
+            >
+              Log Out
+            </button>
+          )}
         </Link>
       </div>
     </>
