@@ -27,8 +27,10 @@ const EditCourse = () => {
 
   return (
     <>
-      <Course course={course} />
-      <UpdateForm />
+      <div className="px-5">
+        <Course course={course} />
+        <UpdateForm courseId={courseId} />
+      </div>
     </>
   );
 };

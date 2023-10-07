@@ -8,11 +8,11 @@ const Course = (props) => {
   };
   return (
     <>
-      <div
-        className="flex justify-center text-slate-50 my-6"
-        onClick={handleClick}
-      >
-        <div className="bg-neutral-900 flex flex-col gap-2 p-3 pb-5 rounded-lg w-80 group drop-shadow-lg hover:scale-105 transition-all ease-out delay-100 cursor-pointer">
+      <div className="flex justify-center text-slate-50 my-6">
+        <div
+          className="bg-neutral-900 flex flex-col gap-2 p-3 pb-5 rounded-lg w-80 group drop-shadow-lg hover:scale-105 transition-all ease-out delay-100 cursor-pointer"
+          onClick={handleClick}
+        >
           <div className="container rounded-lg mb-2 max-h-60">
             <img
               className="h-full w-full object-cover rounded-lg"
