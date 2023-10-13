@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-const UpdateForm = () => {
+import { updateCourse } from "../actions/course";
+const UpdateForm = ({ courseId }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [published, setPublished] = useState(false);
   const [price, setPrice] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (
       !title.trim() ||
       !description.trim() ||
@@ -17,6 +17,8 @@ const UpdateForm = () => {
     ) {
       alert("Title, Description and Image should not only consist of spaces!");
     }
+
+    updateCourse(imageLink, title, description, price, published, courseId);
 
     setImageLink("");
     setTitle("");
@@ -101,7 +103,7 @@ const UpdateForm = () => {
           className="text-slate-800 bg-amber-300 hover:bg-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center"
           type="submit"
         >
-          Create Course
+          Update Course
         </button>
         <Link to={"/Courses"}>
           <button
